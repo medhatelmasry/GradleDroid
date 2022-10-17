@@ -6,3 +6,4 @@ global using System.Linq;
 global using System.Threading.Tasks;
 global using Microsoft.Extensions.Configuration;
 global using System.Diagnostics;
+global using System.Runtime.InteropServices;

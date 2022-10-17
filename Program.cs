@@ -30,7 +30,7 @@ foreach (var item in absoluteFileNames)
     destination = $"{onlyPath}{fileToCopy}";
 
     Console.WriteLine($"**** START copy file {fileToCopy} to {destination}");
-    File.Copy(fileToCopy, destination,true);
+    File.Copy(fileToCopy, destination, true);
     Console.WriteLine($"**** END copy file {fileToCopy} to {destination}");
 
     Console.WriteLine($"**** START execute script");
@@ -41,9 +41,16 @@ foreach (var item in absoluteFileNames)
 
 void executeApp()
 {
-    string commandToExecute = appFolder + Path.DirectorySeparatorChar + Configuration["Commands:CommandToExecute"];
+    //string commandToExecute = appFolder + Path.DirectorySeparatorChar + Configuration["Commands:Mac:CommandToExecute"];
+    string commandToExecute = string.Empty;
 
-    var command = "bash";
+    var command = Configuration["Commands:Mac:Script"];
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+    {
+        commandToExecute = appFolder + Path.DirectorySeparatorChar + Configuration["Commands:Mac:CommandToExecute"];
+    }
+
     var arguments = string.Format("{0} {1} {2} {3} {4}", "testarg1", "testarg2", "testarg3", "testarg3", "testarg4");
     var processInfo = new ProcessStartInfo()
     {
