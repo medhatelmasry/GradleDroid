@@ -4,16 +4,18 @@
     .AddCommandLine(args)
     .Build();
 
-var rootFolder = Configuration["Folders:RootFolder"];
+var androidAppsRoot = Configuration["Folders:AndroidAppsRoot"];
 var searchFor = Configuration["Files:SearchFor"];
 var fileToCopy = Configuration["Files:FileToCopy"];
 var onlyPath = string.Empty;
 var destination = string.Empty;
 
-Console.WriteLine($"RootFolder={rootFolder}");
+var appFolder = Directory.GetCurrentDirectory();
+
+Console.WriteLine($"RootFolder={androidAppsRoot}");
 Console.WriteLine($"searchFor={searchFor}");
 
-string[] absoluteFileNames = Directory.GetFiles(rootFolder, searchFor, SearchOption.AllDirectories);
+string[] absoluteFileNames = Directory.GetFiles(androidAppsRoot, searchFor, SearchOption.AllDirectories);
 
 Console.WriteLine($"Total Number of submissions: {absoluteFileNames.Length}");
 
@@ -39,7 +41,7 @@ foreach (var item in absoluteFileNames)
 
 void executeApp()
 {
-    string commandToExecute = Configuration["Commands:CommandToExecute"];
+    string commandToExecute = appFolder + Path.DirectorySeparatorChar + Configuration["Commands:CommandToExecute"];
 
     var command = "bash";
     var arguments = string.Format("{0} {1} {2} {3} {4}", "testarg1", "testarg2", "testarg3", "testarg3", "testarg4");
