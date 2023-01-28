@@ -7,6 +7,9 @@
 var androidAppsRoot = Configuration["Folders:AndroidAppsRoot"];
 var searchFor = Configuration["Files:SearchFor"];
 var fileToCopy = Configuration["Files:FileToCopy"];
+var apkFile = Configuration["Files:ApkFile"];
+var reviewSourceDir = Configuration["Files:ReviewSourceDir"];
+
 var onlyPath = string.Empty;
 var destination = string.Empty;
 
@@ -22,26 +25,56 @@ Console.WriteLine($"Total Number of submissions: {absoluteFileNames.Length}");
 int ndx = 0;
 foreach (var item in absoluteFileNames)
 {
-    Console.WriteLine($"**************** Submission {++ndx} ****************");
+    Console.WriteLine($"\n**************** Submission {++ndx} ****************");
     onlyPath = item.Substring(0, item.IndexOf(searchFor));
 
     Console.WriteLine($"CHANGE directory to: {Directory.GetCurrentDirectory()}");
 
     destination = $"{onlyPath}{fileToCopy}";
 
-    Console.WriteLine($"**** START copy file {fileToCopy} to {destination}");
+    Console.WriteLine($"\naaaaaaaaaa START copy file {fileToCopy} to {destination} aaaaaaaaaa");
     File.Copy(fileToCopy, destination, true);
-    Console.WriteLine($"**** END copy file {fileToCopy} to {destination}");
+    Console.WriteLine($"aaaaaaaaaa END copy file {fileToCopy} to {destination} aaaaaaaaaa");
 
-    Console.WriteLine($"**** START execute script");
+    Console.WriteLine($"\nbbbbbbbbbb START execute script bbbbbbbbbb");
     Directory.SetCurrentDirectory(onlyPath);
     executeApp();
-    Console.WriteLine($"**** END execute script");
+    Console.WriteLine($"bbbbbbbbbb END execute script bbbbbbbbbb");
+
+    Console.WriteLine($"\ncccccccccc START copy APK file cccccccccc");
+    string apkFileLocation = $"{onlyPath}";
+    apkFileLocation += $"app{Path.DirectorySeparatorChar}";
+    apkFileLocation += $"build{Path.DirectorySeparatorChar}";
+    apkFileLocation += $"outputs{Path.DirectorySeparatorChar}";
+    apkFileLocation += $"apk{Path.DirectorySeparatorChar}";
+    apkFileLocation += $"debug{Path.DirectorySeparatorChar}";
+    apkFileLocation += apkFile;
+
+    destination = $"{onlyPath}{apkFile}";
+    Console.WriteLine($"Copying APK file FROM \n{apkFileLocation} \nTO \n{destination}");
+
+    if (File.Exists(apkFileLocation)) 
+        File.Copy(apkFileLocation, destination, true);
+
+    Console.WriteLine($"cccccccccc END copy APK file cccccccccc");
+
+    Console.WriteLine($"\ndddddddddd START copy source code dddddddddd");
+    string sourceCodeLocation = $"{onlyPath}";
+    sourceCodeLocation += $"app{Path.DirectorySeparatorChar}";
+    sourceCodeLocation += $"src{Path.DirectorySeparatorChar}";
+    sourceCodeLocation += $"main{Path.DirectorySeparatorChar}.";
+
+    destination = onlyPath + Path.DirectorySeparatorChar + reviewSourceDir;
+    Directory.CreateDirectory("destination");
+
+    Console.WriteLine($"Copying source code files FROM  \n{sourceCodeLocation} \nTO \n{destination}");
+    UnzipLHub.Models.Helper.CopyDirectory(sourceCodeLocation, destination, true);
+
+    Console.WriteLine($"dddddddddd END copy source code dddddddddd");
 }
 
 void executeApp()
 {
-    //string commandToExecute = appFolder + Path.DirectorySeparatorChar + Configuration["Commands:Mac:CommandToExecute"];
     string commandToExecute = string.Empty;
 
     var command = Configuration["Commands:Mac:Script"];
