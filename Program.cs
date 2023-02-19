@@ -4,7 +4,6 @@
     .AddCommandLine(args)
     .Build();
 
-var androidAppsRoot = Configuration["Folders:AndroidAppsRoot"];
 var searchFor = Configuration["Files:SearchFor"];
 var apkFile = Configuration["Files:ApkFile"];
 var reviewSourceDir = Configuration["Files:ReviewSourceDir"];
@@ -17,14 +16,17 @@ var separator = Path.DirectorySeparatorChar;
 
 string? fileToCopySource = string.Empty;
 string? fileToCopyTarget = string.Empty;
+string? androidAppsRoot = string.Empty;
 
 if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
 {
+    androidAppsRoot = Configuration["Folders:AndroidAppsRootMac"];
     fileToCopySource = Configuration["Commands:Mac:FileToCopySource"];
     fileToCopyTarget = Configuration["Commands:Mac:FileToCopyTarget"];
 }
 else
 {
+    androidAppsRoot = Configuration["Folders:AndroidAppsRootWindows"];
     fileToCopySource = Configuration["Commands:Windows:FileToCopySource"];
     fileToCopyTarget = Configuration["Commands:Windows:FileToCopyTarget"];
 }
@@ -102,12 +104,14 @@ void executeApp()
     {
         command = Configuration["Commands:Mac:Script"];
         arguments = appFolder + separator + Configuration["Commands:Mac:Arguments"];
-    } else {
+    }
+    else
+    {
         command = Configuration["Commands:Windows:Script"];
         arguments = Configuration["Commands:Windows:Arguments"];
     }
 
-     var processInfo = new ProcessStartInfo()
+    var processInfo = new ProcessStartInfo()
     {
         FileName = command,
         Arguments = arguments,
